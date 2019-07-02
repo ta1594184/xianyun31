@@ -18,19 +18,19 @@
       </div>
 
       <!-- 登录状态 -->
-      <el-row>
+      <el-row class="box5">
         <!-- 下拉菜单 -->
-        <el-dropdown v-if="true">
+        <el-dropdown v-if="$store.state.user.userInfo.token">
           <span class="el-dropdown-link">
-            <img src="http://157.122.54.189:9095/assets/images/avatar.jpg" alt>
+            <img :src="$axios.defaults.baseURL + $store.state.user.userInfo.user.defaultAvatar" alt="">
 
-            <span>地球发动机</span>
+            <span>{{$store.state.user.userInfo.user.nickname}}</span>
 
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
-          <el-dropdown-menu slot="dropdown">
+          <el-dropdown-menu slot="dropdown" class="stateu">
             <el-dropdown-item>个人中心</el-dropdown-item>
-            <el-dropdown-item>退出</el-dropdown-item>
+            <el-dropdown-item><span @click="handleLogOut">退出</span></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
 
@@ -44,18 +44,31 @@
 
 <script>
 export default {
- 
+
+methods:{
+  handleLogOut(){
+  this.$store.commit("user/clearUserInfo",)
+}
+}
 };
 </script>
 
-<style lang="less">
+<style scroped lang="less">
+.box5{
+  
+
+    margin-top:25px; 
+
+}
 .el-dropdown-link {
     line-height: 60px;
+   
   img {
     width: 36px;
     height: 36px;
     border-radius: 50%;
     vertical-align: middle;
+    
   }
 }
 .login {
@@ -97,6 +110,7 @@ export default {
     &:hover{
          color:#fff;
         }
+        
   }
   
 }
