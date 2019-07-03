@@ -78,7 +78,13 @@ export default {
     methods: {
         // tab切换时触发
         handleSearchTab(item, index){
-            
+               if(index === 1){
+        this.$confirm("目前暂不支持往返，请使用单程选票！", '提示', {
+            confirmButtonText: '确定',
+            showCancelButton: false,
+            type: 'warning'
+        })
+    }
         },
         
         // 出发城市输入框获得焦点时触发
@@ -89,7 +95,7 @@ export default {
               url:"http://157.122.54.189:9095/airs/city?name="+value,
               method:"get",
             }).then(res=>{
-              const {data}= res.data
+              const {data}= res.data                                                                                                                                                                          
               const newdata= data.map(v=>{
                 return{
                   ...v,
@@ -145,12 +151,46 @@ export default {
 
         // 触发和目标城市切换时触发
         handleReverse(){
-            
+               const { departCity, departCode, destCity, destCode} = this.form;
+
+                this.form.departCity = destCity;
+                this.form.departCode = destCode;
+                this.form.destCity = departCity;
+                this.form.destCode = departCode;
+
         },
 
         // 提交表单是触发
         handleSubmit(){
-           console.log(this.form)
+            const rules={
+            depart:{
+              value:this.form.departCity,
+              message:"请输入出发的城市"
+            },
+              dest:{
+              value:this.form.destCity,
+              message:"请输入目的地城市"
+            },
+              departData:{
+              value:this.form.departDate,
+              message:"请输入触发日期"
+            }
+            }
+
+    //对象循环
+   Object.keys(rules).map(v=>{
+     if(!rules[v].value){
+       this.$message.warning(rules[v].message)
+     }
+     return
+   })
+
+
+
+          //  this.$router.push({
+          //    path:"/air/login",
+          //    query:this.form
+          //  })
         }
     },
     mounted() {
