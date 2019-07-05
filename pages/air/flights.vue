@@ -5,7 +5,7 @@
             <!-- 顶部过滤列表 -->
             <div class="flights-content">
                 <!-- 过滤条件 -->
-                <FlightsFilters :data="flightsData"/>
+                <FlightsFilters :data="cacheflightsData" @setDataList="setDataList"/>
                 
                 <!-- 航班头部布局 -->
                     <FightstHead />
@@ -35,7 +35,7 @@
 
             <!-- 侧边栏 -->
             <div class="aside">
-                <!-- 侧边栏组件 -->
+                <FlightsAside />
             </div>
         </el-row>
     </section>
@@ -45,20 +45,30 @@
 import FightstHead from "@/components/air/fightsListHead"
 import FlightsLtem from "@/components/air/flightsItem"
 import FlightsFilters from "@/components/air/flightsFilters"
+import FlightsAside from "@/components/air/flightsAside"
 import moment from "moment";
 
 export default {
     data(){
         return {
-            dateList:[], //分页之后每页的数据
+            //机票默认值，会被修改
             flightsData:{
                 //机票默认值
                 flights: [],
                 info:{},
                 options: {}
             },
+             // 总数据，一旦赋值之后不会被修改
+            cacheflightsData: {
+                // 默认机票列表
+                flights: [],
+                info: {},
+                options: {}
+            },
+            dateList:[], //分页之后每页的数据
             pageIndex: 1, // 当前页数
             pageSize: 5,  // 显示条数
+            total:0  //初始总条数
         }
     },
 mounted(){
@@ -66,9 +76,11 @@ mounted(){
         url:"airs",
         params:this.$route.query
     }).then(res=>{
-        
+        // console.log(res.data)
         this.flightsData=res.data
-        console.log(this.flightsData)
+
+        this.cacheflightsData={...res.data}
+        // console.log(this.flightsData)
         this.total=res.data.total
         //每页条数切割
         this.dateList=res.data.flights.slice(0, 5)
@@ -84,17 +96,31 @@ methods:{
     handleCurrentChange(value){
         //计算列表数据
         this.pageIndex = value
+        this.setDataList()
+        
+    },
+    setDataList(arr){
+
+            if(arr){
+                this.flightsData.flights = arr;
+                // 初始化分页变量
+                this.total = arr.length;
+                this.pageIndex = 1;
+            }
+
         this.dateList=this.flightsData.flights.slice(
             (this.pageIndex - 1) * this.pageSize,
             this.pageIndex * this.pageSize
         )
-    },
+        
+    }
 },
 
     components:{
         FightstHead,
         FlightsLtem,
-        FlightsFilters
+        FlightsFilters,
+        FlightsAside
     }
 }
 </script>

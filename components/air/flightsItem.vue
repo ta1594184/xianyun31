@@ -48,7 +48,8 @@
                         <el-col :span="3" class="choose-button">
                             <el-button 
                             type="warning" 
-                            size="mini">
+                            size="mini"
+                            @click="handleChoose(data.id,item.seat_xid)">
                             选定
                             </el-button>
                             <p>剩余：{{item.discount}}</p>
@@ -69,8 +70,20 @@ export default {
         }
     },
     methods:{
+        //搜索框Tab栏切换
         handleSele(){
            this. isShow=!this.isShow
+        },
+
+        //选取机票详情
+        handleChoose(id,seatId){
+            this.$router.push({
+                path:"/air/order",
+                query:{
+                    id,  //机票id
+                    seatId  //座位id
+                }
+            })
         }
     },
     //计算出发和目的地时差
@@ -96,7 +109,8 @@ export default {
             // 默认是空数组
             default: {}
         }
-    }
+    },
+  
 }
 </script>
 
